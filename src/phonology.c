@@ -101,8 +101,9 @@ void free_phoneme(phoneme* p) {
 
 void free_phono_cell(phono_cell* c) {
 	for (int i = 0; i < *(c->parent->parent->cell_size); i++) {
-		free_phoneme(c->phonemes[i]);
+			free_phoneme(c->phonemes[i]);
 	}
+	free(c->phonemes);
 	free(c);
 }
 
@@ -110,28 +111,32 @@ void free_phono_row(phono_row* r) {
 	for (int i = 0; i < *(r->parent->row_size); i++) {
 		free_phono_cell(r->cells[i]);
 	}
+	free(r->cells);
 	free(r);
 }
 
 void free_phono_table(phono_table* t) {
-	for (int i = 0; i < *(t->num_rows); i++) {
-		free_phono_row(t->rows[i]);
-	}
+	
 	
 	for (int i = 0; i < *(t->row_size); i++) {
 		free(t->column_defs[i]);
 	}
+	free(t->row_size);
+
 	for (int i = 0; i < *(t->num_rows); i++) {
 		free(t->row_defs[i]);
 	}
+
+
 	for (int i = 0; i < *(t->cell_size); i++) {
 		free(t->cell_defs[i]);
 	}
+	
+	for (int i = 0; i < *(t->num_rows); i++) {
+		free_phono_row(t->rows[i]);
+	}
 
-	free(t->row_size);
 	free(t->num_rows);
-	free(t->cell_size);
-
 	free(t->row_defs);
 	free(t->column_defs);
 	free(t->cell_defs);
