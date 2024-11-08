@@ -14,7 +14,8 @@ phono_cell* init_blank_cell() {
 	p->def = malloc(sizeof(char));
 
 	phono_cell* c = malloc(sizeof(phono_cell));
-	c->phonemes = &p;
+	c->phonemes = malloc(sizeof(phono_cell**));
+	*(c->phonemes) = &p;
 	
 	return c;
 }
@@ -100,8 +101,12 @@ void free_phoneme(phoneme* p) {
 }
 
 void free_phono_cell(phono_cell* c) {
-	for (int i = 0; i < *(c->parent->parent->cell_size); i++) {
-			free_phoneme(c->phonemes[i]);
+	if (c->parent != NULL) {
+		if (c->parent->parent != NULL) {
+			for (int i = 0; i < *(c->parent->parent->cell_size); i++) {
+				free_phoneme(c->phonemes[i]);
+			}
+		}
 	}
 	free(c->phonemes);
 	free(c);

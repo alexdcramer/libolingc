@@ -7,7 +7,7 @@ system_includes := /usr/include/olingc/phonology.h
 compile: lib/libolingc.a lib/libolingc.so
 install: compile /usr/lib/libolingc.so /usr/include/olingc/phonology.h
 test: compile install bin/test-libolingc
-	bin/test-libolingc
+	gdb bin/test-libolingc
 
 bin/test-libolingc: /usr/lib/libolingc.so $(system_includes)
 	$(info Creating testing binary...)
