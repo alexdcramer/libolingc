@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include <phonology.h>
+#include <olingc/phonology.h>
 
 int test_blank_cell() {
 	int fail_count = 0;
