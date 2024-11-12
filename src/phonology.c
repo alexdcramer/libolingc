@@ -9,25 +9,26 @@
  */
 
 phono_cell* init_blank_cell() {
-	phoneme* p = malloc(sizeof(phoneme));
-	p->value = malloc(sizeof(char));
-	p->def = malloc(sizeof(char));
-
-	phono_cell* c = malloc(sizeof(phono_cell));
-	c->phonemes = malloc(sizeof(phono_cell**));
-	*(c->phonemes) = &p;
+	phono_cell *c = malloc(sizeof(phono_cell));
 	
+	c->phonemes = malloc(sizeof(phoneme*));
+	c->phonemes[0] = malloc(sizeof(phoneme));
+	c->phonemes[0]->value = malloc(sizeof(char));
+	*c->phonemes[0]->value = ' ';
+	c->phonemes[0]->parent = c;
+
+
 	return c;
 }
 
 phono_row* init_blank_row() {
 	
-	phono_row* r = malloc(sizeof(phono_row));
+	phono_row *r = malloc(sizeof(phono_row));
 
-	phono_cell* c = init_blank_cell();
-	c->parent = r;
+	r->cells = malloc(sizeof(phono_cell*));
+	r->cells[0] = init_blank_cell();
+	r->cells[0]->parent = r;
 
-	r->cells = &c;
 	r->def = malloc(sizeof(char));
 	
 	return r;
@@ -96,19 +97,29 @@ phono_system* init_blank_system() {
  */
 
 void free_phoneme(phoneme* p) {
-	free(p->value);
+	if (p != NULL) {
+		free(p->value);
+	}
 	free(p);
 }
 
 void free_phono_cell(phono_cell* c) {
-	if (c->parent != NULL) {
-		if (c->parent->parent != NULL) {
-			for (int i = 0; i < *(c->parent->parent->cell_size); i++) {
-				free_phoneme(c->phonemes[i]);
+	if (c != NULL) {
+		if (c->parent != NULL) {
+			if (c->parent->parent != NULL) {
+				for (int i = 0; i < *(c->parent->parent->cell_size); i++) {
+					free_phoneme(c->phonemes[i]);
+				}
 			}
 		}
+	
+		// If size isn't defined by the parent (ex. no parent), at least free the phoneme at index 0
+		if (c->phonemes != NULL) {
+			free_phoneme(c->phonemes[0]);
+		}	
+	
+		free(c->phonemes);
 	}
-	free(c->phonemes);
 	free(c);
 }
 

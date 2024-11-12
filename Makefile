@@ -9,12 +9,12 @@ install: compile /usr/lib/libolingc.so /usr/include/olingc/phonology.h
 test: compile install bin/test-libolingc
 	gdb bin/test-libolingc
 
-bin/test-libolingc: /usr/lib/libolingc.so $(system_includes)
+bin/test-libolingc: /usr/lib/libolingc.so src/test/test-phonology.c $(system_includes)
 	$(info Creating testing binary...)
-	gcc -o bin/test-libolingc src/test/test-phonology.c -lolingc
+	gcc -g -o bin/test-libolingc src/test/test-phonology.c -lolingc
 /usr/lib/libolingc.so: lib/libolingc.so
 	cp lib/libolingc.so /usr/lib/libolingc.so
-	ldconfig -n -v /usr/lib
+	ldconfig -n /usr/lib
 /usr/include/olingc/phonology.h: include/phonology.h
 	mkdir /usr/include/olingc
 	cp include/phonology.h /usr/include/olingc/phonology.h
